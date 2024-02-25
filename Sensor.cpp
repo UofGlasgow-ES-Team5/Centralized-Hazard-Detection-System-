@@ -1,4 +1,3 @@
-// Include necessary headers for IO operations, threading, timing, atomic operations, GPIO, and LCD control
 #include <iostream>
 #include <cstdint> // For fixed width integers
 #include <thread>
@@ -12,78 +11,106 @@ extern "C" {
 #include "sensirion_common.h"
 #include "sensirion_i2c_hal.h"
 
+// Thresholds
+const uint16_t MAX_CO2 = 1000; // CO2 threshold in ppm
+const float MAX_TEMP = 25.0; // Temperature threshold in °C
 
-// Global variable to control the running of the sensor reading thread
+// GPIO for LED
+const int LED_GPIO = 4; // GPIO 4 as per BCM numbering
+
 std::atomic<bool> keepRunning(true);
+
+// Function to control LED state
+//void setLEDState(bool state) {
+//    gpioWrite(LED_GPIO, state ? 1 : 0); // Turn LED on/off based on state
+//}
 
 // Function that will be run in a separate thread for reading sensor data
 void sensorReadingThread() {
-    // Initialize the I2C HAL (Hardware Abstraction Layer) for communication with the sensor
     sensirion_i2c_hal_init();
 
-    // Wake up the sensor and start periodic measurements
     scd4x_wake_up();
     scd4x_stop_periodic_measurement();
     scd4x_reinit();
     scd4x_start_periodic_measurement();
 
-    // Loop to read sensor data continuously until keepRunning is set to false
+    bool isFlashing = false; // Track if we are currently flashing the LED
+
     while (keepRunning) {
         bool data_ready_flag = false;
-        // Wait for 0.5 seconds for the sensor to be ready to send new data
-        sensirion_i2c_hal_sleep_usec(500000); // 0.5 seconds delay
+        sensirion_i2c_hal_sleep_usec(1000000); // 1 second delay
         scd4x_get_data_ready_flag(&data_ready_flag);
         if (!data_ready_flag) {
-            continue; // Skip the rest of the loop if data is not ready
+            continue;
         }
         uint16_t co2;
         float temperature, humidity;
-        // Read the measurement from the sensor. If successful, update the display.
         if (scd4x_read_measurement(&co2, &temperature, &humidity) == 0) {
-            char buffer[32];
-            // Prepare the string with CO2 and temperature data for the first line of the display
-            snprintf(buffer, sizeof(buffer), "CO2:%u ppm", co2);
-            lcd1602SetCursor(0, 0); // Set cursor to the beginning of the first line
-            lcd1602WriteString(buffer); // Write the string to the display
+            // Determine if we need to flash the LED
+            bool shouldFlash = co2 > MAX_CO2 || temperature > MAX_TEMP;
+            
+            if (shouldFlash && !isFlashing) {
+    // If we need to flash and are not already doing so, start flashing
+                isFlashing = true;
+                std::thread([&]() { // Capture by reference to allow the thread to see updates to isFlashing
+                    while (isFlashing) {
+                        gpioWrite(LED_GPIO, 1); // LED on
+                        std::this_thread::sleep_for(std::chrono::milliseconds(500)); // 500 ms on
+                        gpioWrite(LED_GPIO, 0); // LED off
+                        std::this_thread::sleep_for(std::chrono::milliseconds(500)); // 500 ms off
+                    }
+                    gpioWrite(LED_GPIO, 0); // Ensure the LED is off when the flashing stops
+                }).detach(); // Detach the thread so we don't need to join it later
+            } else if (!shouldFlash) {
+                // If we should stop flashing, update the flag
+                isFlashing = false;
+            }
 
-            // Prepare the string with humidity data for the second line of the display
+            
+            char buffer[32];
+            snprintf(buffer, sizeof(buffer), "CO2:%u ppm", co2);
+            lcd1602SetCursor(0, 0);
+            lcd1602WriteString(buffer);
+
             snprintf(buffer, sizeof(buffer), "Temp:%.2fC", temperature);
-            lcd1602SetCursor(0, 1); // Set cursor to the beginning of the second line
-            lcd1602WriteString(buffer); // Write the string to the display
+            lcd1602SetCursor(0, 1);
+            lcd1602WriteString(buffer);
         }
     }
 
-    // Stop the sensor's periodic measurements and free I2C HAL resources when done
+    isFlashing = false; // Ensure flashing stops when the loop exits
+    gpioWrite(LED_GPIO, 0); // Ensure the LED is off when stopping
+
     scd4x_stop_periodic_measurement();
     sensirion_i2c_hal_free();
 }
 
+
+
 int main() {
-    // Initialize the GPIO library. If it fails, print an error message and exit.
     if (gpioInitialise() < 0) {
         std::cerr << "pigpio initialization failed" << std::endl;
         return 1;
     }
 
-    // Initialize the LCD display. If it fails, print an error message, terminate GPIO and exit.
+    gpioSetMode(LED_GPIO, PI_OUTPUT); // Set LED GPIO as output
+
     if (lcd1602Init(1, 0x3f) != 0) {
         std::cerr << "LCD initialization failed" << std::endl;
         gpioTerminate();
         return 1;
     }
 
-    // Start the sensor reading in a separate thread
     std::thread sensorThread(sensorReadingThread);
 
     std::cout << "Press Enter to quit" << std::endl;
-    // Wait for the user to press Enter to quit the application
     std::cin.get();
 
-    // Signal the sensor reading thread to stop and wait for it to finish
     keepRunning = false;
     sensorThread.join();
 
-    // Shutdown the LCD display and terminate GPIO use before exiting
+  //  setLEDState(false); // Ensure the LED is turned off before exiting
+
     lcd1602Shutdown();
     gpioTerminate();
     return 0;
