@@ -1,0 +1,47 @@
+#include <wiringPi.h>
+#include <iostream>
+
+// Define GPIO pins
+const int sensorPin = 27;
+const int ledPin = 11; 
+const int buzzerPin = 12;
+
+int main() {
+
+    if (wiringPiSetup() == -1) {
+        std::cerr << "Error initializing WiringPi. Exiting." << std::endl;
+        return 1;
+    }
+
+  
+    pinMode(sensorPin, INPUT);
+    pinMode(ledPin, OUTPUT);
+    pinMode(buzzerPin, OUTPUT);
+
+    try {
+        while (true) {
+           //reading from sensor
+            int sensorState = digitalRead(sensorPin);
+
+           //checking state of sensor
+            if (sensorState == HIGH) {
+              
+                digitalWrite(ledPin, HIGH);
+                digitalWrite(buzzerPin, HIGH);
+                delay(1000);  
+                digitalWrite(ledPin, LOW);
+                digitalWrite(buzzerPin, LOW);
+            }
+
+            delay(100); 
+        }
+    } catch (...) {
+        // Clean up GPIO on exit
+        digitalWrite(ledPin, LOW);
+        digitalWrite(buzzerPin, LOW);
+        std::cerr << "Exception occurred. Exiting." << std::endl;
+        return 1;
+    }
+
+    return 0;
+}
