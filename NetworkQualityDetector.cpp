@@ -1,6 +1,35 @@
 #include <bits/stdc++.h>
 #include <regex>
 
+void connectToWiFi(const string& ssid, const string& password) {
+    // Path to the wpa_supplicant configuration file
+    const string wpaConfPath = "/etc/wpa_supplicant/wpa_supplicant.conf";
+
+    // Check if the network entry already exists in the configuration file
+    ifstream wpaConfFile(wpaConfPath);
+    string line;
+    while (getline(wpaConfFile, line)) {
+        if (line.find("ssid=\"" + ssid + "\"") != string::npos) {
+            cout << "Network entry already exists in " << wpaConfPath << endl;
+            return;
+        }
+    }
+    wpaConfFile.close();
+
+    // Add the new network entry to the wpa_supplicant configuration file
+    ofstream wpaConfAppend(wpaConfPath, ios::app);
+    wpaConfAppend << "\nnetwork={" << endl;
+    wpaConfAppend << "    ssid=\"" << ssid << "\"" << endl;
+    wpaConfAppend << "    psk=\"" << password << "\"" << endl;
+    wpaConfAppend << "}" << endl;
+    wpaConfAppend.close();
+
+    // Restart the networking service to apply changes
+    system("sudo systemctl restart networking");
+
+    cout << "WiFi configuration updated successfully for SSID: " << ssid << endl;
+}
+
 int main() {
     // Run the command and open a pipe to capture its output
     FILE* pipe = popen("sudo iwlist wlan0 scan", "r");
