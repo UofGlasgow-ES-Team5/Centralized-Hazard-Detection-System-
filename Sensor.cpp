@@ -1,4 +1,4 @@
-#include <iostream>
+ #include <iostream>
 #include <cstdint> // For fixed width integers
 #include <thread>
 #include <chrono>
@@ -15,9 +15,9 @@ extern "C" {
 const uint16_t MAX_CO2 = 1000; // CO2 threshold in ppm
 const float MAX_TEMP = 25.0; // Temperature threshold in °C
 
-// GPIO for LED
+// GPIO for LED and Buzzer
 const int LED_GPIO = 4; // GPIO 4 as per BCM numbering
-
+const int BUZZER_GPIO = 17; 
 std::atomic<bool> keepRunning(true);
 
 // Function to control LED state
@@ -53,13 +53,21 @@ void sensorReadingThread() {
     // If we need to flash and are not already doing so, start flashing
                 isFlashing = true;
                 std::thread([&]() { // Capture by reference to allow the thread to see updates to isFlashing
+                    int delay = 1000; // Initializing the delay ( in ms)
                     while (isFlashing) {
                         gpioWrite(LED_GPIO, 1); // LED on
-                        std::this_thread::sleep_for(std::chrono::milliseconds(500)); // 500 ms on
+                        gpioWrite(BUZZER_GPIO, 1); // BUZZER on
+                        std::this_thread::sleep_for(std::chrono::milliseconds(dealy)); // delay ms on
                         gpioWrite(LED_GPIO, 0); // LED off
-                        std::this_thread::sleep_for(std::chrono::milliseconds(500)); // 500 ms off
+                        gpioWrite(BUZZER_GPIO, 0); // Buzzer off
+                        std::this_thread::sleep_for(std::chrono::milliseconds(dealy)); // delay ms off
+                        delay = delay-50; // this increases the flashing and buzzing frequency as the loop count increases
+                        if (delay<0){
+                            delay = 0; // eliminate the effect of negative delay values
+                        }
                     }
                     gpioWrite(LED_GPIO, 0); // Ensure the LED is off when the flashing stops
+                    gpioWrite(BUZZER_GPIO, 0); // Ensure the BUZZER is off when the buzzing stops
                 }).detach(); // Detach the thread so we don't need to join it later
             } else if (!shouldFlash) {
                 // If we should stop flashing, update the flag
@@ -94,6 +102,8 @@ int main() {
     }
 
     gpioSetMode(LED_GPIO, PI_OUTPUT); // Set LED GPIO as output
+    gpioSetMode(BUZZER_GPIO, PI_OUTPUT); // Set BUZZER GPIO as output
+
 
     if (lcd1602Init(1, 0x3f) != 0) {
         std::cerr << "LCD initialization failed" << std::endl;
