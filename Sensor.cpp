@@ -57,10 +57,10 @@ void sensorReadingThread() {
                     while (isFlashing) {
                         gpioWrite(LED_GPIO, 1); // LED on
                         gpioWrite(BUZZER_GPIO, 1); // BUZZER on
-                        std::this_thread::sleep_for(std::chrono::milliseconds(dealy)); // delay ms on
+                        std::this_thread::sleep_for(std::chrono::milliseconds(delay)); // delay ms on
                         gpioWrite(LED_GPIO, 0); // LED off
                         gpioWrite(BUZZER_GPIO, 0); // Buzzer off
-                        std::this_thread::sleep_for(std::chrono::milliseconds(dealy)); // delay ms off
+                        std::this_thread::sleep_for(std::chrono::milliseconds(delay)); // delay ms off
                         delay = delay-50; // this increases the flashing and buzzing frequency as the loop count increases
                         if (delay<0){
                             delay = 0; // eliminate the effect of negative delay values
