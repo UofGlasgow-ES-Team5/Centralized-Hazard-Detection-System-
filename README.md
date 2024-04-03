@@ -20,14 +20,14 @@ g++ -fopenmp thread-controller.cpp -o controller
 - 1.6. 2 x 220ohm Resistors
 
 ### 2. Edge Node:
--2.1. Raspberry Pi 4 Model B**
-- 2.2. MicroSD card** (with Raspbian OS installed)
-- 2.3. SCD40 Module** (I2C-compatible CO2, temperature, and humidity sensor)
-- 2.4. Hw-131 Power Module**
-- 2.5. I2C-compatible LCD**
-- 2.6. 2x 220m Ohm Resistors**
-- 2.7. Red LED** (for hazard indication)
-- 2.8. Blue LED** (for Wi-Fi connectivity indication)
+- 2.1. Raspberry Pi 4 Model B
+- 2.2. MicroSD card (with Raspbian OS installed)
+- 2.3. SCD40 Module (I2C-compatible CO2, temperature, and humidity sensor)
+- 2.4. Hw-131 Power Module
+- 2.5. I2C-compatible LCD
+- 2.6. 2x 220m Ohm Resistors
+- 2.7. Red LED (for hazard indication)
+- 2.8. Blue LED (for Wi-Fi connectivity indication)
 - 2.9. 3.3V Active Buzzer
 
 
