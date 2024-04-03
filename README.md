@@ -25,7 +25,7 @@
 g++ -o main main.cpp CO2Sensor.cpp scd4x_i2c.c sensirion_common.c sensirion_i2c_hal.c sensirion_i2c.c -I. -lpigpio -llcd1602 -lrt -pthread -L. 
 ```
 
-## Running command
+## Run command
 ```
 sudo ./main
 ```
