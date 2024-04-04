@@ -1,8 +1,8 @@
 #include <iostream>
-#include "CO2Sensor.h"
+#include "SensorReader.h"
 
 int main() {
-    CO2Sensor sensor;
+    SensorReader sensor;
     sensor.startReadingThread();
     std::cout << "Press Enter to quit" << std::endl;
     std::cin.get();

@@ -1,6 +1,6 @@
-#include "CO2Sensor.h"
+#include "SensorReader.h"
 
-CO2Sensor::CO2Sensor() : keepRunning(true) {
+SensorReader::SensorReader() : keepRunning(true) {
     gpioInitialise();
     gpioSetMode(LED_GPIO, PI_OUTPUT);
     gpioSetMode(BUZZER_GPIO, PI_OUTPUT);
@@ -11,43 +11,29 @@ CO2Sensor::CO2Sensor() : keepRunning(true) {
     }
 }
 
-CO2Sensor::~CO2Sensor() {
+SensorReader::~SensorReader() {
     lcd1602Shutdown();
     gpioTerminate();
 }
 
-void CO2Sensor::startReadingThread() {
+void SensorReader::startReadingThread() {
     sensorThread = std::thread([this]() {
         this->sensorReadingThread();
     });
 }
 
-void CO2Sensor::stopReadingThread() {
+void SensorReader::stopReadingThread() {
     keepRunning = false;
     sensorThread.join();
 }
 
-void CO2Sensor::initializeSensor() {
+void SensorReader::sensorReadingThread() {
     sensirion_i2c_hal_init();
+
     scd4x_wake_up();
     scd4x_stop_periodic_measurement();
     scd4x_reinit();
     scd4x_start_periodic_measurement();
-}
-
-void CO2Sensor::updateDisplay(uint16_t co2, float temperature) {
-    char buffer[32];
-    snprintf(buffer, sizeof(buffer), "CO2:%u ppm", co2);
-    lcd1602SetCursor(0, 0);
-    lcd1602WriteString(buffer);
-
-    snprintf(buffer, sizeof(buffer), "Temp:%.2fC", temperature);
-    lcd1602SetCursor(0, 1);
-    lcd1602WriteString(buffer);
-}
-
-void CO2Sensor::sensorReadingThread() {
-    initializeSensor();
 
     bool isFlashing = false; // Track if we are currently flashing the LED
 
@@ -87,8 +73,15 @@ void CO2Sensor::sensorReadingThread() {
                 isFlashing = false;
             }
 
-            // Update the LCD display with the current CO2 and temperature readings
-            updateDisplay(co2, temperature);
+            
+            char buffer[32];
+            snprintf(buffer, sizeof(buffer), "CO2:%u ppm", co2);
+            lcd1602SetCursor(0, 0);
+            lcd1602WriteString(buffer);
+
+            snprintf(buffer, sizeof(buffer), "Temp:%.2fC", temperature);
+            lcd1602SetCursor(0, 1);
+            lcd1602WriteString(buffer);
         }
     }
 

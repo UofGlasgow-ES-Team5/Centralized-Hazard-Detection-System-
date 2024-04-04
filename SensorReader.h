@@ -1,5 +1,5 @@
-#ifndef CO2SENSOR_H
-#define CO2SENSOR_H
+#ifndef SENSORREADER_H
+#define SENSORREADER_H
 
 #include <iostream>
 #include <cstdint>
@@ -14,10 +14,10 @@ extern "C" {
 #include "sensirion_common.h"
 #include "sensirion_i2c_hal.h"
 
-class CO2Sensor {
+class SensorReader {
 public:
-    CO2Sensor();
-    ~CO2Sensor();
+    SensorReader();
+    ~SensorReader();
     void startReadingThread();
     void stopReadingThread();
 
@@ -30,8 +30,6 @@ private:
     std::thread sensorThread;
 
     void sensorReadingThread();
-    void initializeSensor();
-    void updateDisplay(uint16_t co2, float temperature);
 };
 
-#endif // CO2SENSOR_H
+#endif // SENSORREADER_H
