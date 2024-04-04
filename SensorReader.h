@@ -30,6 +30,8 @@ private:
     std::thread sensorThread;
 
     void sensorReadingThread();
+    void initializeSensor();
+    void updateDisplay(uint16_t co2, float temperature);
 };
 
 #endif // CO2SENSOR_H
