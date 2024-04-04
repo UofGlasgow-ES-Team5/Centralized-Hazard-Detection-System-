@@ -31,8 +31,7 @@ The development of HazardSense was driven by the dire need to combat the invisib
 - 2.7. Red LED (for hazard indication)
 - 2.8. Blue LED (for Wi-Fi connectivity indication)
 - 2.9. 3.3V Active Buzzer
-
-![Edge Node Schematic](Schematic_Diagrams/EdgeNodeSchematic.JPG)
+![Edge Node Schematic](Schematic Diagrams/EdgeNodeSchematic.JPG)
 
 ## Compilation command
 ```
