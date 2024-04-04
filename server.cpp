@@ -5,6 +5,7 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <string>
+#include <cstring>
 
 int main() {
     //Create a socket
@@ -86,10 +87,12 @@ int main() {
         }
 
         // Display message
-        std::cout << "Received:" << string(buf, 0, bytesRecv) << std::cout;
+        std::cout << "Received:" << std::string(buf, 0, bytesRecv) << std::endl;
+
+        std::string response = "From server: " + std::string(buf, 0, bytesRecv);
 
         // Resend message
-        send(clientSocket, buf, bytesRecv + 1, 0);
+        send(clientSocket, response.c_str(), response.size() + 1, 0);
     }
 
     close(clientSocket);
