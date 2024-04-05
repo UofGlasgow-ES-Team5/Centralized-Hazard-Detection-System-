@@ -14,6 +14,8 @@
 #include <chrono>
 #include <atomic>
 
+#include "json.hpp"
+
 class Client {
 private:
     std::string ip_address;
@@ -24,7 +26,7 @@ private:
 
 public:
     Client();
-    void connectToServer(std::string &branchNodeIP);
+    void connectToServer(std::string &branchNodeIP, nlohmann::json &j);
 };
 
 #endif // CLIENT_H

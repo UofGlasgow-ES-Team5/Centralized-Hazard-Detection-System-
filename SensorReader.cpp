@@ -1,4 +1,5 @@
 #include "SensorReader.h"
+#include "json.hpp"
 
 SensorReader::SensorReader() : keepRunning(true) {
     gpioInitialise();
@@ -16,9 +17,9 @@ SensorReader::~SensorReader() {
     gpioTerminate();
 }
 
-void SensorReader::startReadingThread() {
-    sensorThread = std::thread([this]() {
-        this->sensorReadingThread();
+void SensorReader::startReadingThread(nlohmann::json &j) {
+    sensorThread = std::thread([this, &j]() {
+        this->sensorReadingThread(j);
     });
 }
 
@@ -27,7 +28,7 @@ void SensorReader::stopReadingThread() {
     sensorThread.join();
 }
 
-void SensorReader::sensorReadingThread() {
+void SensorReader::sensorReadingThread(nlohmann::json &j) {
     sensirion_i2c_hal_init();
 
     scd4x_wake_up();
@@ -48,7 +49,16 @@ void SensorReader::sensorReadingThread() {
         float temperature, humidity;
         if (scd4x_read_measurement(&co2, &temperature, &humidity) == 0) {
             // Determine if we need to flash the LED
+            j["co2"] = co2;
+            j["temperature"] = temperature;
+            j["humidity"] = humidity;
             bool shouldFlash = co2 > MAX_CO2 || temperature > MAX_TEMP;
+
+            // Convert JSON object to string
+            std::string jsonString = j.dump();
+            
+            // Print the JSON string
+            // std::cout << "JSON Data:\n" << jsonString << std::endl;
             
             if (shouldFlash && !isFlashing) {
     // If we need to flash and are not already doing so, start flashing
