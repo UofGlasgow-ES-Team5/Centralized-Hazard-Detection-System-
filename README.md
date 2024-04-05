@@ -36,7 +36,12 @@ The development of HazardSense was driven by the dire need to combat the invisib
 
 ## Compilation command
 ```
-g++ -o main main.cpp SensorReader.cpp WifiManager.cpp scd4x_i2c.c sensirion_common.c sensirion_i2c_hal.c sensirion_i2c.c -I. -lpigpio -llcd1602 -lrt -pthread -L.
+g++ -o main main.cpp Client.cpp SensorReader.cpp WifiManager.cpp scd4x_i2c.c sensirion_common.c sensirion_i2c_hal.c sensirion_i2c.c -I. -lpigpio -llcd1602 -lrt -pthread -L.
+```
+
+### To release GPIO
+```
+sudo killall pigpiod
 ```
 
 ## Run command

@@ -1,7 +1,6 @@
 #include "WifiManager.h"
 
 std::string WifiManager::findStrongestWifi(std::vector<std::pair<std::string, int>> &myMap) {
-    // Implementation
     if (myMap.empty()) {
         return "";
     }
@@ -15,7 +14,6 @@ std::string WifiManager::findStrongestWifi(std::vector<std::pair<std::string, in
 }
 
 std::vector<std::pair<std::string, int>> WifiManager::scanForWifi() {
-    // Implementation
     FILE* pipe = popen("sudo iwlist wlan0 scan", "r");
     if (!pipe) {
         std::cerr << "Error: Couldn't open pipe." << std::endl;
@@ -58,15 +56,14 @@ std::vector<std::pair<std::string, int>> WifiManager::scanForWifi() {
     }
 
     // Print the stored values
-    std::cout << "ESSID values and corresponding Quality values:\n";
-    for (const auto& pair : qualityAndEssidPairs) {
-        std::cout << "ESSID: " << pair.first << " - Quality: " << pair.second << std::endl;
-    }
+    // std::cout << "ESSID values and corresponding Quality values:\n";
+    // for (const auto& pair : qualityAndEssidPairs) {
+    //     std::cout << "ESSID: " << pair.first << " - Quality: " << pair.second << std::endl;
+    // }
     return qualityAndEssidPairs;
 }
 
 std::map<std::string, std::string> WifiManager::readNetworkFile() {
-    // Implementation
     std::string filePath = "network_info.txt";
 
     std::ifstream inputFile(filePath);
@@ -99,25 +96,20 @@ std::map<std::string, std::string> WifiManager::readNetworkFile() {
 
     inputFile.close();
 
-    for (const auto& pair : keyValueMap) {
-        std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
-    }
+    // for (const auto& pair : keyValueMap) {
+    //     std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+    // }
 
     return keyValueMap;
 }
 
 void WifiManager::connectToWifi(std::string SSID, std::string password) {
-    // Implementation
-    std::cout<<"Test ";
     std::string command = "sudo nmcli device wifi connect "+SSID+" password "+password;
     system(command.c_str());
     std::cout << "Connected to : " << SSID << std::endl;
 }
 
-void WifiManager::connectToStrongestWifi(std::map<std::string, std::string> networkInfo, std::vector<std::pair<std::string, int>> scannedWifis) {
-    // Implementation
-    std::string closestWifi = findStrongestWifi(scannedWifis);
-    std::cout << "Strongest WiFi : " << closestWifi << std::endl;
+void WifiManager::connectToStrongestWifi(std::map<std::string, std::string> &networkInfo, std::string &closestWifi) {
     auto searchElement = networkInfo.find(closestWifi);
     if(searchElement != networkInfo.end()) {
         std::cout<<"Will connect to strongest wifi!!" << std::endl;
@@ -129,11 +121,23 @@ void WifiManager::connectToStrongestWifi(std::map<std::string, std::string> netw
 }
 
 WifiManager::WifiManager() {
-    networkInfo = readNetworkFile();
+    // networkInfo = readNetworkFile();
 }
 
-void WifiManager::startNetworkProcess() {
-    // Implementation
+void WifiManager::startNetworkProcess(std::string &branchNode, std::string &branchNodeIP, std::map<std::string, std::string> &networkInfo) {
     auto wifiMap = scanForWifi();
-    WifiManager::connectToStrongestWifi(networkInfo, wifiMap);
+
+    std::string closestWifi = findStrongestWifi(wifiMap);
+    std::cout << "Strongest WiFi : " << closestWifi << std::endl;
+    if(branchNode == closestWifi) {
+        std::cout << "Already connected to the strongest WiFi" << std::endl;
+        return;
+    }
+    else{
+        std::cout << "Previous branch node: " << branchNode << std::endl;
+        branchNode = closestWifi;
+        branchNodeIP = "NULL";
+        std::cout << "New branch node: " << branchNode << std::endl;
+        WifiManager::connectToStrongestWifi(networkInfo, branchNode);
+    }
 }
