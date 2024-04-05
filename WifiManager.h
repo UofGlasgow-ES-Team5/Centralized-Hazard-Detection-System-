@@ -17,13 +17,13 @@ private:
 
     std::string findStrongestWifi(std::vector<std::pair<std::string, int>> &myMap);
     std::vector<std::pair<std::string, int>> scanForWifi();
-    std::map<std::string, std::string> readNetworkFile();
     void connectToWifi(std::string SSID, std::string password);
-    void connectToStrongestWifi(std::map<std::string, std::string> networkInfo, std::vector<std::pair<std::string, int>> scannedWifis);
+    void connectToStrongestWifi(std::map<std::string, std::string> &networkInfo, std::string &closestWifi);
 
 public:
     WifiManager();
-    void startNetworkProcess();
+    void startNetworkProcess(std::string &branchNode, std::string &branchNodeIP, std::map<std::string, std::string> &networkInfo);
+    std::map<std::string, std::string> readNetworkFile();
 };
 
 #endif

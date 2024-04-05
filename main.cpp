@@ -1,12 +1,23 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <string>
+#include <map>
 #include "SensorReader.h"
 #include "WifiManager.h"
+#include "Client.h"
+
 
 int main() {
     SensorReader sensor;
     WifiManager wifiManager;
+    Client client;
+
+    std::string branchNode = "", branchNodeIP = "";
+    std::map<std::string, std::string> networkInfo = wifiManager.readNetworkFile();
+
+    
+
 
     // Start SensorReader in a separate thread
     std::thread sensorThread([&]() {
@@ -14,19 +25,25 @@ int main() {
     });
 
     // Start WifiManager in a separate thread
-   std::thread wifiThread([&]() {
+    std::thread wifiThread([&]() {
         while (true) {
-            wifiManager.startNetworkProcess();
+            wifiManager.startNetworkProcess(branchNode, branchNodeIP, networkInfo);
             std::this_thread::sleep_for(std::chrono::seconds(20)); // Sleep for 20 seconds
         }
     });
 
-    // Join the threads
+    // Start WifiManager in a separate thread
+    std::thread clientThread([&]() {
+        while (true) {
+            client.connectToServer(branchNodeIP);
+            std::this_thread::sleep_for(std::chrono::seconds(5)); // Sleep for 20 seconds
+        }
+    });
 
-    std::cout << "Press Enter to quit" << std::endl;
-    std::cin.get();
+    // Join the threads
     sensor.stopReadingThread();
     wifiThread.join();
+    clientThread.join();
 
     return 0;
 }
