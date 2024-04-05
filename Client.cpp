@@ -1,4 +1,5 @@
 #include "Client.h"
+#include "json.hpp"
 
 std::string Client::getRouterIP() {
     std::string result;
@@ -27,7 +28,7 @@ std::string Client::getRouterIP() {
 
 Client::Client() : ip_address(getRouterIP()) {}
 
-void Client::connectToServer(std::string &branchNodeIP) {
+void Client::connectToServer(std::string &branchNodeIP, nlohmann::json &j) {
     if(branchNodeIP != ip_address) {
         ip_address = getRouterIP();
         if(ip_address.size()){
@@ -38,7 +39,8 @@ void Client::connectToServer(std::string &branchNodeIP) {
     int sock = 0, valread;
     struct sockaddr_in serv_addr;
     char buffer[1024] = {0};
-    const char* hello = "Hello from client";
+    // const char* hello = "Hello from client";
+    std::string sensorDataString = j.dump();
 
     // Create socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -62,8 +64,8 @@ void Client::connectToServer(std::string &branchNodeIP) {
     }
 
     // Send data to server
-    send(sock, hello, strlen(hello), 0);
-    std::cout << "Hello message sent" << std::endl;
+    send(sock, sensorDataString.c_str(), sensorDataString.length(), 0);
+    std::cout << "Client sent:" << sensorDataString << std::endl;
 
     // Receive data from server
     valread = read(sock, buffer, 1024);

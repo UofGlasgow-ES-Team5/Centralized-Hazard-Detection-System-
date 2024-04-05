@@ -14,11 +14,14 @@ extern "C" {
 #include "sensirion_common.h"
 #include "sensirion_i2c_hal.h"
 
+// Include nlohmann/json.hpp
+#include "json.hpp"
+
 class SensorReader {
 public:
     SensorReader();
     ~SensorReader();
-    void startReadingThread();
+    void startReadingThread(nlohmann::json &j);
     void stopReadingThread();
 
 private:
@@ -29,7 +32,7 @@ private:
     std::atomic<bool> keepRunning;
     std::thread sensorThread;
 
-    void sensorReadingThread();
+    void sensorReadingThread(nlohmann::json &j);
 };
 
 #endif // SENSORREADER_H
