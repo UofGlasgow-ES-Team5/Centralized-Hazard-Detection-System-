@@ -55,8 +55,14 @@ public class Client {
         return ipAddress;
     }
 
-    public void connectToServer(String serverName, int serverPort, final ConnectionCallback callback) {
-        this.serverName = serverName;
+    public static String getMacAddress(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        return wifiInfo.getMacAddress();
+    }
+
+    public void connectToServer(String sensorDataString) {
+        this.serverName = getRouterIpAddress(this.context);
         this.serverPort = serverPort;
 
         new Thread(new Runnable() {
@@ -65,15 +71,29 @@ public class Client {
                 try {
                     Socket socket = new Socket(serverName, serverPort);
 
+                    //Send JSON string to server
+                    PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+                    writer.println(sensorDataString);
+
                     BufferedReader br_input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     final String txtFromServer = br_input.readLine();
 
-                    callback.onSuccess(txtFromServer);
+//                    callback.onSuccess(txtFromServer);
                 } catch (IOException e) {
-                    callback.onError(e);
+//                    callback.onError(e);
                 }
             }
         }).start();
+    }
+
+    public String getRouterIpAddress(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+
+        int ipAddress = wifiInfo.getIpAddress(); // Get the IP address of the device
+
+        // Convert IP address to String
+        return formatIpAddress(ipAddress);
     }
 
     private String formatIpAddress(int ip) {
