@@ -1,0 +1,3 @@
+CO2:1500
+Temperature:30
+Humidity:40

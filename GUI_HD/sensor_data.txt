@@ -1,0 +1,4 @@
+CO2:12
+Temperature:32
+Humidity:30
+
