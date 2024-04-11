@@ -2,11 +2,13 @@ package com.example.chds_branch;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.DhcpInfo;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -55,26 +57,66 @@ public class Client {
         return ipAddress;
     }
 
-    public void connectToServer(String serverName, int serverPort, final ConnectionCallback callback) {
-        this.serverName = serverName;
-        this.serverPort = serverPort;
+    public static String getMacAddress(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        return wifiInfo.getMacAddress();
+    }
+
+    public void connectToServer(String sensorDataString) {
+        this.serverName = getHotspotIpAddress();
+        Log.d("Client", "IP" + this.getHotspotIpAddress());
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Socket socket = new Socket(serverName, serverPort);
+                    Log.d("Client", "Attempting to create socket");
+                    Socket socket = new Socket(serverName, 1352);
+                    Log.d("Client", "Socket created");
 
+                    Log.d("Client", "Sensor Data:" + sensorDataString);
+                    //Send JSON string to server
+                    Log.d("Client", "Attempting to create PrintWriter");
+                    PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+                    Log.d("Client", "PrintWriter created");
+
+                    writer.println(sensorDataString);
+
+                    Log.d("Client", "Attempting to create BufferedReader");
                     BufferedReader br_input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    final String txtFromServer = br_input.readLine();
+                    Log.d("Client", "BufferedReader created");
 
-                    callback.onSuccess(txtFromServer);
+                    final String txtFromServer = br_input.readLine();
+                    Log.d("Client", "Received from server: " + txtFromServer);
+
+//                callback.onSuccess(txtFromServer);
                 } catch (IOException e) {
-                    callback.onError(e);
+                    Log.e("Client", "Exception occurred: ", e);
+//                callback.onError(e);
                 }
             }
         }).start();
     }
+
+    public String getRouterIpAddress(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+
+        int ipAddress = wifiInfo.getIpAddress(); // Get the IP address of the device
+
+        // Convert IP address to String
+        return formatIpAddress(ipAddress);
+    }
+
+    public String getHotspotIpAddress() {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        DhcpInfo dhcpInfo = wifiManager.getDhcpInfo();
+        int ipAddress = dhcpInfo.gateway;
+
+        return formatIpAddress(ipAddress);
+    }
+
 
     private String formatIpAddress(int ip) {
         return (ip & 0xFF) + "." +
