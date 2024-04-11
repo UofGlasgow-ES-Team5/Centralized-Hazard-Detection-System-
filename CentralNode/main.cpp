@@ -54,39 +54,56 @@ void readFileAndRunServer(json& sensorLimits, TCPServer& server) {
 }
 
 std::string zoneDetector(std::string sensorDataString, json& sensorLimits) {
-   
-    json jsonData = json::parse(sensorDataString);
+    // Validate input
+    if (sensorDataString.empty() || sensorLimits.empty()) {
+        return "Empty sensor Data"; // or throw an exception
+    }
+
+    json jsonData;
+
+    try {
+        // Attempt to parse sensorDataString
+        jsonData = json::parse(sensorDataString);
+    } catch (const std::exception& e) {
+        return "Parsing error"; // Parsing failed, return empty string or handle the error as needed
+    }
 
     // Extract CO2, Temperature, and Humidity values from jsonData
-    double co2 = std::stod(jsonData["CO2"].get<std::string>());
-    double temperature = std::stod(jsonData["Temperature"].get<std::string>());
-    double humidity = std::stod(jsonData["Humidity"].get<std::string>());
+    double co2 = 0.0, temperature = 0.0, humidity = 0.0;
 
-    // // Extract CO2, Temperature, and Humidity limits from sensorLimits
-    double co2Limit = std::stod(jsonData["CO2"].get<std::string>());
-    double temperatureLimit = std::stod(jsonData["Temperature"].get<std::string>());
-    double humidityLimit = std::stod(jsonData["Humidity"].get<std::string>());
+    try {
+        // Try uppercase keys first
+        co2 = std::stod(jsonData["CO2"].get<std::string>());
+        temperature = std::stod(jsonData["Temperature"].get<std::string>());
+        humidity = std::stod(jsonData["Humidity"].get<std::string>());
+    } catch (const std::exception& e) {
+        // If uppercase keys failed, try lowercase keys
+        try {
+            co2 = jsonData["co2"];
+            temperature = jsonData["temperature"];
+            humidity = jsonData["humidity"];
+        } catch (const std::exception& e) {
+            return "Failed to extract required data"; // Failed to extract required data, return empty string or handle the error
+        }
+    }
 
+    // Extract CO2, Temperature, and Humidity limits from sensorLimits
+    double co2Limit = std::stod(sensorLimits["CO2"].get<std::string>());
+    double temperatureLimit = std::stod(sensorLimits["Temperature"].get<std::string>());
+    double humidityLimit = std::stod(sensorLimits["Humidity"].get<std::string>());
+
+    // Check for hazard zones
     std::string hazardZone = "";
+    std::string branchNode = jsonData["branchNode"].get<std::string>();
 
-    // std::cout << "TEST 0::Hazard zone" << co2 <<"CO2 linit:" << co2Limit <<std::endl;
-    // Compare extracted values with corresponding limits
-    if (co2 > 10) {
-        hazardZone = jsonData["branchNode"].get<std::string>();
-        // hazardZone = "TEST";
+    if (co2 > co2Limit || temperature > temperatureLimit || humidity > humidityLimit) {
+        hazardZone = branchNode;
     }
-    if (temperature > temperatureLimit) {
-        // std::cout << "TEST 0::Hazard zone" << std::endl;
-        hazardZone = jsonData["branchNode"].get<std::string>();
-    }
-    if (humidity > humidityLimit) {
-        //  std::cout << "TEST 0::Hazard zone" << std::endl;
-        hazardZone = jsonData["branchNode"].get<std::string>();
-    }
+    std::cout << co2 << " - " << temperature << "-" << humidity << "-->" << branchNode << std::endl;
 
-    // std::cout << "TEST 1::Hazard zone" << hazardZone << std::endl;
     return hazardZone;
 }
+
 
 int main() {
     std::string filename = "./GUI_HD/sensor_limits.txt"; // Change this to your file path
