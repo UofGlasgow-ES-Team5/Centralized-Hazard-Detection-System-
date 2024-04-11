@@ -124,6 +124,9 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 while (serverRunning) {
+//                    String testString = "Hello";
+//                    client.connectToServer(testString);
+//                    Log.d("MainActivity", "Sensor Data: " + testString);
                     Socket socket = serverSocket.accept();  // Accepting new client
                     count++;
 
@@ -137,12 +140,10 @@ public class MainActivity extends AppCompatActivity {
                     String macAddress = client.getMacAddress(context); // Implement this method to get MAC address
                     sensorData.put("branchNode", macAddress);
 
-                    String sensorDataString = sensorData.toString();
-                    client.connectToServer(sensorDataString);
+                    String sensorDataString = sensorData.toString() + "\n";
 //                     Log sensorData
                     Log.d("MainActivity", "Sensor Data: " + sensorDataString);
-//                    Log.d("MainActivity", "Sensor Data: ");
-
+                    client.connectToServer(sensorDataString);
 
                     runOnUiThread(new Runnable() {
                         @Override
