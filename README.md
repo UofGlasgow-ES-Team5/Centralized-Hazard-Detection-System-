@@ -35,16 +35,35 @@ The development of HazardSense was driven by the dire need to combat the invisib
 ![Edge Node Schematic](Schematic_Diagrams/EdgeNodeSchematic.JPG)
 
 ## Compilation command
+
+## Edge Node
 ```
 g++ -o main main.cpp Client.cpp SensorReader.cpp WifiManager.cpp scd4x_i2c.c sensirion_common.c sensirion_i2c_hal.c sensirion_i2c.c -I. -lpigpio -llcd1602 -lrt -pthread -L. -w
 ```
+
+## Central Node
+```
+g++ -o main main.cpp TCPServer.cpp -pthread
+```
+
+## Utility commands
 
 ### To release GPIO
 ```
 sudo killall pigpiod
 ```
 
-## Run command
+### Run command
 ```
 sudo ./main
+```
+
+### Connect to WiFi
+```
+sudo nmcli device wifi connect Hotspot password qwerty123
+```
+
+### TCP Server test
+```
+telnet localhost 1352
 ```
