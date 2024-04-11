@@ -36,12 +36,12 @@ The development of HazardSense was driven by the dire need to combat the invisib
 
 ## Compilation command
 
-## Edge Node
+### Edge Node
 ```
 g++ -o main main.cpp Client.cpp SensorReader.cpp WifiManager.cpp scd4x_i2c.c sensirion_common.c sensirion_i2c_hal.c sensirion_i2c.c -I. -lpigpio -llcd1602 -lrt -pthread -L. -w
 ```
 
-## Central Node
+### Central Node
 ```
 g++ -o main main.cpp TCPServer.cpp -pthread
 ```
