@@ -28,7 +28,7 @@ std::string Client::getRouterIP() {
 
 Client::Client() : ip_address(getRouterIP()) {}
 
-void Client::connectToServer(std::string &branchNodeIP, nlohmann::json &j) {
+void Client::connectToServer(std::string &branchNodeIP, nlohmann::json &sensorData, nlohmann::json &sensorDataLimits) {
     if(branchNodeIP != ip_address) {
         ip_address = getRouterIP();
         if(ip_address.size()){
@@ -40,7 +40,7 @@ void Client::connectToServer(std::string &branchNodeIP, nlohmann::json &j) {
     struct sockaddr_in serv_addr;
     char buffer[1024] = {0};
     // const char* hello = "Hello from client";
-    std::string sensorDataString = j.dump();
+    std::string sensorDataString = sensorData.dump() + "\n";
 
     // Create socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -71,5 +71,32 @@ void Client::connectToServer(std::string &branchNodeIP, nlohmann::json &j) {
     valread = read(sock, buffer, 1024);
     std::cout << "Response received: " << buffer << std::endl;
 
+    // Parse JSON data received in buffer
+    nlohmann::json receivedJson;
+
+    try {
+        receivedJson = nlohmann::json::parse(buffer);
+        updateSensorLimits(receivedJson, sensorDataLimits);
+    } catch (const std::exception& e) {
+        std::cerr << "Error parsing JSON: " << e.what() << std::endl;
+        close(sock);
+        return;
+    }
+
     close(sock);
+}
+
+void Client::updateSensorLimits(nlohmann::json receivedJson, nlohmann::json &sensorDataLimits) {
+        double co2 = 0.0, temperature = 0.0, humidity = 0.0;
+
+        co2 = std::stod(receivedJson["CO2"].get<std::string>());
+        temperature = std::stod(receivedJson["Temperature"].get<std::string>());
+        humidity = std::stod(receivedJson["Humidity"].get<std::string>());
+        std::cout << "New CO2:" << co2 << " - Temp:" << temperature << "- Humidity:" << humidity  << std::endl;
+
+        sensorDataLimits["co2"] = co2;
+        sensorDataLimits["temperature"] = temperature;
+        sensorDataLimits["humidity"] = humidity;
+
+        std::cout << "New Limits" << sensorDataLimits.dump() << std::endl;
 }
