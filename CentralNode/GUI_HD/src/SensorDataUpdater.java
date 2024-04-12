@@ -14,6 +14,7 @@ public class SensorDataUpdater implements Runnable {
                 Thread.sleep(1000); // Check every 1 seconds 
                 hdFrame.loadSensorData();
                 hdFrame.updateSensorData();
+				hdFrame.updateMessage();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

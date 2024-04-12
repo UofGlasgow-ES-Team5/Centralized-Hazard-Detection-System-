@@ -24,7 +24,7 @@ public class HDFrame extends JFrame implements ActionListener {
 	private JButton EditButton,SaveButton;
     private HashMap<String, Integer> sensorData;
     private HashMap<String, Integer> sensorLimits;
-    private JTextField co2T,tempT,humT,co2TL,tempTL,humTL;
+    private JTextField co2T,tempT,humT,co2TL,tempTL,humTL,locT,msgT;
     private int co2, humidity, temperature;
     
 	HDFrame(){
@@ -46,8 +46,8 @@ public class HDFrame extends JFrame implements ActionListener {
 		co2T = new JTextField();
 		tempT = new JTextField();
 		humT = new JTextField();
-		JTextField locT = new JTextField();
-		JTextField msgT = new JTextField();
+		locT = new JTextField();
+		msgT = new JTextField();
 		co2TL = new JTextField();
 		tempTL = new JTextField();
 		humTL = new JTextField();
@@ -111,10 +111,11 @@ public class HDFrame extends JFrame implements ActionListener {
 		
 		msgT.setBounds(10, 23, 480,70);
 		msgT.setFocusable(false);
-		msgT.setEditable(false);
+		msgT.setEditable(true);
 		msgT.setBackground(Color.DARK_GRAY);
+		msgT.setForeground(Color.BLACK);
 		msgT.setFont(new Font("Arial",Font.BOLD,15)); 
-
+	
 		
 //----------------------Labels-------------------------//
 		JLabel Title_label = new JLabel();
@@ -264,6 +265,7 @@ public class HDFrame extends JFrame implements ActionListener {
         loadSensorLimits();
         updateSensorData();
         updateSensorLimits();
+        updateMessage();
         
         SensorDataUpdater sensorDataUpdater = new SensorDataUpdater(this);
         Thread sensorDataThread = new Thread(sensorDataUpdater);
@@ -281,6 +283,7 @@ public class HDFrame extends JFrame implements ActionListener {
     protected void loadSensorData() {
         try {
             BufferedReader reader = new BufferedReader(new FileReader("sensor_data.txt"));
+            
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(":");
@@ -309,6 +312,55 @@ public class HDFrame extends JFrame implements ActionListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    protected String loadMessage(String filename) throws IOException {
+        StringBuilder content = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new FileReader(filename));
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            content.append(line).append("\n");
+        }
+
+        reader.close();
+        return content.toString();
+    }
+    
+    protected void updateMessage() {
+    	
+    	int co2 = sensorData.get("CO2");
+        int temperature = sensorData.get("Temperature");
+        int humidity = sensorData.get("Humidity");
+        
+        int co2L = sensorLimits.get("CO2");
+        int temperatureL = sensorLimits.get("Temperature");
+        int humidityL = sensorLimits.get("Humidity");
+        
+		if(co2 > co2L ) {
+			msgT.setBackground(Color.YELLOW);
+			msgT.setText("**Warning:\nCO2 level has exceeded permissible limit.**");
+		}
+		else if (temperature > temperatureL ) {
+			msgT.setBackground(Color.YELLOW);
+			msgT.setText("**Warning:\nTemperature level has exceeded permissible limit.**");
+		}
+		else if(humidity > humidityL ) {
+			msgT.setBackground(Color.YELLOW);
+			msgT.setText("**Warning:\nHumidity level has exceeded permissible limit.**");
+		}
+		else {
+			msgT.setBackground(Color.DARK_GRAY);
+			try {
+	            String content = loadMessage("message.txt");
+	            msgT.setText(content);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            msgT.setText("Error: Unable to read file.");
+	        }
+		}
+    	
+    	setVisible(true);
     }
     
     protected void updateSensorData() {
