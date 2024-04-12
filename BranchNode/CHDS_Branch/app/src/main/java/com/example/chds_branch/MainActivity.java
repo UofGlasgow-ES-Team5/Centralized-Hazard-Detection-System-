@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
                     PrintWriter output_Server = new PrintWriter(socket.getOutputStream());
                     Log.d("MainActivity", "Branch response:" + client.dataFromCentralNode);
-                    output_Server.write("Welcome to Server:" + client.dataFromCentralNode);
+                    output_Server.write(client.dataFromCentralNode);
                     output_Server.flush();
 
                     socket.close();
