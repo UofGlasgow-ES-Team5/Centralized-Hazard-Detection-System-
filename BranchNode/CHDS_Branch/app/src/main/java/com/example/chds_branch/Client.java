@@ -22,7 +22,7 @@ public class Client {
     private int serverPort;
     private Context context;
 
-    public String dataFromCentralNode = "{\"CO2\":\"1700\",\"Humidity\":\"100\",\"Temperature\":\"300\",\"branchNode\":\"3\"}\n";
+    public String dataFromCentralNode = "{\"CO2\":\"1000\",\"Humidity\":\"100\",\"Temperature\":\"300\",\"branchNode\":\"3\"}\n";
 
     public Client(Context context) {
         this.context = context;
