@@ -23,10 +23,11 @@ private:
     std::atomic<bool> running{false};
     std::thread clientThread;
     std::string getRouterIP();
+    void updateSensorLimits(nlohmann::json receivedJson, nlohmann::json &sensorDataLimits) ;
 
 public:
     Client();
-    void connectToServer(std::string &branchNodeIP, nlohmann::json &j);
+    void connectToServer(std::string &branchNodeIP, nlohmann::json &sensorData, nlohmann::json &sensorDataLimits);
 };
 
 #endif // CLIENT_H

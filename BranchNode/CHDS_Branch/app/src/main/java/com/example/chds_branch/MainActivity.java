@@ -16,6 +16,9 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ServerThread serverThread;
     public void onClickStartServer(View view) {
-        serverThread = new ServerThread();
+        serverThread = new ServerThread(this);
         serverThread.startServer();
     }
 
@@ -98,6 +101,11 @@ public class MainActivity extends AppCompatActivity {
         private boolean serverRunning;
         private ServerSocket serverSocket;
         private int count = 0;
+        private Context context;
+
+        public ServerThread(Context context) {
+            this.context = context;
+        }
 
         public void startServer() {
             serverRunning = true;
@@ -116,8 +124,26 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 while (serverRunning) {
+//                    String testString = "Hello";
+//                    client.connectToServer(testString);
+//                    Log.d("MainActivity", "Sensor Data: " + testString);
                     Socket socket = serverSocket.accept();  // Accepting new client
                     count++;
+
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    String jsonPacket = reader.readLine();
+
+                    // Parse JSON packet
+                    JSONObject sensorData = new JSONObject(jsonPacket);
+
+//                     Append MAC address to JSON data
+                    String macAddress = client.getMacAddress(context); // Implement this method to get MAC address
+                    sensorData.put("branchNode", macAddress);
+
+                    String sensorDataString = sensorData.toString() + "\n";
+//                     Log sensorData
+                    Log.d("MainActivity", "Sensor Data: " + sensorDataString);
+                    client.connectToServer(sensorDataString);
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -127,12 +153,15 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                     PrintWriter output_Server = new PrintWriter(socket.getOutputStream());
-                    output_Server.write("Welcome to Server:" + count);
+                    Log.d("MainActivity", "Branch response:" + client.dataFromCentralNode);
+                    output_Server.write(client.dataFromCentralNode);
                     output_Server.flush();
 
                     socket.close();
                 }
             } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
         }

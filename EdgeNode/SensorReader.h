@@ -21,7 +21,7 @@ class SensorReader {
 public:
     SensorReader();
     ~SensorReader();
-    void startReadingThread(nlohmann::json &j);
+    void startReadingThread(nlohmann::json &sensorData, nlohmann::json &sensorDataLimits);
     void stopReadingThread();
 
 private:
@@ -32,7 +32,7 @@ private:
     std::atomic<bool> keepRunning;
     std::thread sensorThread;
 
-    void sensorReadingThread(nlohmann::json &j);
+    void sensorReadingThread(nlohmann::json &sensorData, nlohmann::json &sensorDataLimits);
 };
 
 #endif // SENSORREADER_H

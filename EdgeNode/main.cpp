@@ -11,7 +11,7 @@
 #include "Client.h"
 
 int main() {
-    nlohmann::json j;
+    nlohmann::json sensorData, sensorDataLimits;
     SensorReader sensor;
     WifiManager wifiManager;
     Client client;
@@ -19,14 +19,18 @@ int main() {
     std::string branchNode = "", branchNodeIP = "";
     std::map<std::string, std::string> networkInfo = wifiManager.readNetworkFile();
 
-    j["co2"] = 0;
-    j["temperature"] = 0;
-    j["humidity"] = 0;
+    sensorData["co2"] = 0;
+    sensorData["temperature"] = 0;
+    sensorData["humidity"] = 0;
+    
+    sensorDataLimits["co2"] = 1000.0;
+    sensorDataLimits["temperature"] = 25.0;
+    sensorDataLimits["humidity"] = 40;
 
 
     // Start SensorReader in a separate thread
     std::thread sensorThread([&]() {
-        sensor.startReadingThread(j);
+        sensor.startReadingThread(sensorData, sensorDataLimits);
     });
 
     // Start WifiManager in a separate thread
@@ -40,7 +44,8 @@ int main() {
     // Start WifiManager in a separate thread
     std::thread clientThread([&]() {
         while (true) {
-            client.connectToServer(branchNodeIP, j);
+            // client.connectToServer(branchNodeIP, sensorData);
+            client.connectToServer(branchNodeIP, sensorData, sensorDataLimits);
             std::this_thread::sleep_for(std::chrono::seconds(5)); // Sleep for 20 seconds
         }
     });
