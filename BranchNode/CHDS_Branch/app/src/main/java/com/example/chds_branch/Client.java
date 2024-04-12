@@ -22,6 +22,8 @@ public class Client {
     private int serverPort;
     private Context context;
 
+    public String dataFromCentralNode = "{\"CO2\":\"1700\",\"Humidity\":\"100\",\"Temperature\":\"300\",\"branchNode\":\"3\"}\n";
+
     public Client(Context context) {
         this.context = context;
     }
@@ -65,13 +67,14 @@ public class Client {
 
     public void connectToServer(String sensorDataString) {
         this.serverName = getHotspotIpAddress();
-        Log.d("Client", "IP" + this.getHotspotIpAddress());
+        Log.d("Client", "Central Node IP:" + this.getHotspotIpAddress());
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     Log.d("Client", "Attempting to create socket");
+//                    Socket socket = new Socket("192.168.0.23", 1352);
                     Socket socket = new Socket(serverName, 1352);
                     Log.d("Client", "Socket created");
 
@@ -87,8 +90,8 @@ public class Client {
                     BufferedReader br_input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     Log.d("Client", "BufferedReader created");
 
-                    final String txtFromServer = br_input.readLine();
-                    Log.d("Client", "Received from server: " + txtFromServer);
+                    dataFromCentralNode = br_input.readLine();
+                    Log.d("Client", "Received from server: " + dataFromCentralNode);
 
 //                callback.onSuccess(txtFromServer);
                 } catch (IOException e) {
