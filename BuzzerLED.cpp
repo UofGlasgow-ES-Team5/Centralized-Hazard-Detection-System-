@@ -26,7 +26,7 @@ int main() {
     }
 
     // Define GPIO pins for LED and buzzer
-    int ledPin = 17;
+    int ledPin =22 ;
     int buzzerPin = 18; 
     
     // Call the function to control LED and buzzer

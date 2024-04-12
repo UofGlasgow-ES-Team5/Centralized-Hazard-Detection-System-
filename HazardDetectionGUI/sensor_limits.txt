@@ -1,3 +1,0 @@
-Temperature:100
-CO2:100
-Humidity:100

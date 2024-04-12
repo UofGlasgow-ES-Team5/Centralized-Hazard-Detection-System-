@@ -1,3 +1,0 @@
-CO2:500
-Humidity:80
-Temperature:25
