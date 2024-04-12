@@ -30,7 +30,7 @@ int main() {
 
     // Start SensorReader in a separate thread
     std::thread sensorThread([&]() {
-        sensor.startReadingThread(sensorData);
+        sensor.startReadingThread(sensorData, sensorDataLimits);
     });
 
     // Start WifiManager in a separate thread
