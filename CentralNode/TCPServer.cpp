@@ -100,7 +100,7 @@ void TCPServer::run() {
             std::lock_guard<std::mutex> lock(queueMutex);
             requestQueue.push_back(std::string(buf, 0, bytesRecv));
 
-            std::string response = sensorLimits;
+            std::string response = sensorLimits + "\n";
 
             // Resend message
             send(clientSocket, response.c_str(), response.size() + 1, 0);

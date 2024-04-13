@@ -282,7 +282,7 @@ public class HDFrame extends JFrame implements ActionListener {
       	
     protected void loadSensorData() {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("sensor_data.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("../sensor_data.txt"));
             
             String line;
             while ((line = reader.readLine()) != null) {
@@ -300,7 +300,7 @@ public class HDFrame extends JFrame implements ActionListener {
     
     private void loadSensorLimits() {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("sensor_limits.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("../sensor_limits.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(":");
@@ -352,7 +352,7 @@ public class HDFrame extends JFrame implements ActionListener {
 		else {
 			msgT.setBackground(Color.DARK_GRAY);
 			try {
-	            String content = loadMessage("message.txt");
+	            String content = loadMessage("../message.txt");
 	            msgT.setText(content);
 	        } catch (IOException e) {
 	            e.printStackTrace();
@@ -435,7 +435,7 @@ public class HDFrame extends JFrame implements ActionListener {
              sensorLimits.put("Humidity", humidity);
              
              try {
-                 BufferedWriter writer = new BufferedWriter(new FileWriter("sensor_limits.txt"));
+                 BufferedWriter writer = new BufferedWriter(new FileWriter("../sensor_limits.txt"));
                  writer.write("CO2:" + co2 + "\n");
                  writer.write("Temperature:" + temperature + "\n");
                  writer.write("Humidity:" + humidity + "\n");
