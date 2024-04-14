@@ -75,10 +75,10 @@ void TCPServer::run() {
             );
 
             if (result) {
-                std::cout << host << " connected on " << svc << std::endl;
+                std::cout << "Host:" << host << " connected on " << svc << std::endl;
             } else {
                 inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
-                std::cout << host << "Connected on " << ntohs(client.sin_port) << std::endl;
+                std::cout << "Host:"<< host << " Connected on " << ntohs(client.sin_port) << std::endl;
             }
 
             // While receiving - display message, echo message

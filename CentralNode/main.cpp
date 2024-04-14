@@ -3,11 +3,20 @@
 #include <fstream>
 #include <thread>
 #include <chrono>
+#include <pigpio.h>
 
 #include "TCPServer.h"
 #include "json.hpp"
 
 std::string SENSOR_LIMITS_FILE = "./GUI_HD/sensor_limits.txt";
+
+const int FAN_GPIO_1 = 15; // GPIO pin for the fan 1
+const int FAN_GPIO_2 = 18; // GPIO pin for the fan 2
+
+std::map<int, bool> zoneMap = {
+    {0, false},
+    {1, false}
+};
 
 using json = nlohmann::json;
 
@@ -53,10 +62,10 @@ void readFileAndRunServer(json& sensorLimits, TCPServer& server) {
     }
 }
 
-std::string zoneDetector(std::string sensorDataString, json& sensorLimits) {
+std::pair<std::string, bool> zoneDetector(std::string sensorDataString, json& sensorLimits) {
     // Validate input
     if (sensorDataString.empty() || sensorLimits.empty()) {
-        return "Empty sensor Data"; // or throw an exception
+        return {"Empty sensor Data", false}; // or throw an exception
     }
 
     json jsonData;
@@ -65,7 +74,7 @@ std::string zoneDetector(std::string sensorDataString, json& sensorLimits) {
         // Attempt to parse sensorDataString
         jsonData = json::parse(sensorDataString);
     } catch (const std::exception& e) {
-        return "Parsing error"; // Parsing failed, return empty string or handle the error as needed
+        return {"Parsing error", false}; // Parsing failed, return empty string or handle the error as needed
     }
 
     // Extract CO2, Temperature, and Humidity values from jsonData
@@ -83,7 +92,7 @@ std::string zoneDetector(std::string sensorDataString, json& sensorLimits) {
             temperature = jsonData["temperature"];
             humidity = jsonData["humidity"];
         } catch (const std::exception& e) {
-            return "Failed to extract required data"; // Failed to extract required data, return empty string or handle the error
+            return {"Failed to extract required data", false}; // Failed to extract required data, return empty string or handle the error
         }
     }
 
@@ -93,17 +102,69 @@ std::string zoneDetector(std::string sensorDataString, json& sensorLimits) {
     double humidityLimit = std::stod(sensorLimits["Humidity"].get<std::string>());
 
     // Check for hazard zones
-    std::string hazardZone = "";
+    std::pair<std::string, bool> zoneInfo;
     std::string branchNode = jsonData["branchNode"].get<std::string>();
 
     if (co2 > co2Limit || temperature > temperatureLimit || humidity > humidityLimit) {
-        hazardZone = branchNode;
+        zoneInfo = {branchNode, true};
     }
-    std::cout << co2 << " - " << temperature << "-" << humidity << "-->" << branchNode << std::endl;
+    else {
+        zoneInfo = {branchNode, false};
+    }
+    // std::cout << co2 << " - " << temperature << "-" << humidity << "-->" << branchNode << std::endl;
 
-    return hazardZone;
+    return zoneInfo;
 }
 
+void zoneFanAction(int zoneID, bool fanAction) {
+    if (gpioInitialise() < 0) {
+        std::cerr << "pigpio initialization failed\n" << std::endl;
+        return;
+    }
+
+    if(zoneID == 0) {
+        if(fanAction == true){
+            gpioSetMode(FAN_GPIO_1, PI_OUTPUT); // Set fan GPIO pin as output
+            if(zoneMap[zoneID] == false) {
+                gpioWrite(FAN_GPIO_1, 1);
+                zoneMap[zoneID] = true;
+            }
+            else
+                return;
+        }
+        else {
+            if(zoneMap[zoneID] == true) {
+                gpioWrite(FAN_GPIO_1, 0);
+                zoneMap[zoneID] = false;
+            }
+            else
+                return;
+        }
+    }
+    if(zoneID == 1) {
+        if(fanAction == true){
+            gpioSetMode(FAN_GPIO_2, PI_OUTPUT); // Set fan GPIO pin as output
+            if(zoneMap[zoneID] == false) {
+                gpioWrite(FAN_GPIO_2, 1);
+            }
+            else
+                return;
+        }
+        else {
+            if(zoneMap[zoneID] == true) {
+                gpioWrite(FAN_GPIO_2, 0);
+            }
+            else
+                return;
+        }
+    }
+}
+
+int mapBranchZones(std::string hazardZoneMAC) {
+    if(hazardZoneMAC == "02:00:00:00:00:00")
+        return 0;
+    return -1;  // return -1 if there is not match
+}
 
 int main() {
     std::string filename = "./GUI_HD/sensor_limits.txt"; // Change this to your file path
@@ -124,22 +185,24 @@ int main() {
 
     // Main thread to display request strings received by the server
     while (true) {
-    std::this_thread::sleep_for(std::chrono::seconds(1)); // Sleep for 1 second
-    // Get request queue from server
-    std::vector<std::string> requestQueue = server.getRequestQueue();
-    
-    // Display received request strings
-    for (const auto& request : requestQueue) {
-        std::cout << "Received request: " << request << std::endl;
-        std::string hazardZone = zoneDetector(request, sensorLimits);
-        // if(hazardZone.length()) {
-            std::cout << "Hazard zone:" << hazardZone << std::endl;
-        // }
-    }
+        std::this_thread::sleep_for(std::chrono::seconds(1)); // Sleep for 1 second
+        // Get request queue from server
+        std::vector<std::string> requestQueue = server.getRequestQueue();
+        
+        // Display received request strings
+        for (const auto& request : requestQueue) {
+            std::cout << "Received request: " << request << std::endl;
+            std::pair<std::string, bool> zoneInfo = zoneDetector(request, sensorLimits);
+            int hazardZoneID = mapBranchZones(zoneInfo.first);
+            if(hazardZoneID > -1) {
+                std::cout << "Hazard zone #" << hazardZoneID << std::endl;
+                zoneFanAction(hazardZoneID, zoneInfo.second);
+            }
+        }
 
-    // Clear the request queue
-    server.clearRequestQueue();
-}
+        // Clear the request queue
+        server.clearRequestQueue();
+    }
 
     // Join the threads
     fileReaderThread.join();
