@@ -43,7 +43,7 @@ g++ -o main main.cpp Client.cpp SensorReader.cpp WifiManager.cpp scd4x_i2c.c sen
 
 ### Central Node
 ```
-g++ -o main main.cpp TCPServer.cpp -pthread
+g++ -o main main.cpp TCPServer.cpp -pthread -lpigpio
 ```
 
 ## Utility commands

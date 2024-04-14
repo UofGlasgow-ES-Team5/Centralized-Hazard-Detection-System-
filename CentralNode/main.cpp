@@ -11,7 +11,7 @@
 std::string SENSOR_LIMITS_FILE = "./GUI_HD/sensor_limits.txt";
 
 const int FAN_GPIO_1 = 15; // GPIO pin for the fan 1
-const int FAN_GPIO_2 = 18; // GPIO pin for the fan 2
+const int FAN_GPIO_2 = 23; // GPIO pin for the fan 2
 
 std::map<int, bool> zoneMap = {
     {0, false},
@@ -146,6 +146,7 @@ void zoneFanAction(int zoneID, bool fanAction) {
             gpioSetMode(FAN_GPIO_2, PI_OUTPUT); // Set fan GPIO pin as output
             if(zoneMap[zoneID] == false) {
                 gpioWrite(FAN_GPIO_2, 1);
+                zoneMap[zoneID] = true;
             }
             else
                 return;
@@ -153,6 +154,7 @@ void zoneFanAction(int zoneID, bool fanAction) {
         else {
             if(zoneMap[zoneID] == true) {
                 gpioWrite(FAN_GPIO_2, 0);
+                zoneMap[zoneID] = false;
             }
             else
                 return;
@@ -161,8 +163,10 @@ void zoneFanAction(int zoneID, bool fanAction) {
 }
 
 int mapBranchZones(std::string hazardZoneMAC) {
-    if(hazardZoneMAC == "02:00:00:00:00:00")
+    if(hazardZoneMAC == "4e79b18fb7e4dc6e")
         return 0;
+    else if(hazardZoneMAC == "1a00f95e11d9081f")
+        return 1;
     return -1;  // return -1 if there is not match
 }
 
