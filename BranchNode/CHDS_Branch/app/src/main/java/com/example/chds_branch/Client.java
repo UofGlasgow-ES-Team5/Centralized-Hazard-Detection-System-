@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.Log;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class Client {
     private int serverPort;
     private Context context;
 
-    public String dataFromCentralNode = "{\"CO2\":\"1000\",\"Humidity\":\"100\",\"Temperature\":\"300\",\"branchNode\":\"3\"}\n";
+    public String dataFromCentralNode = "{\"CO2\":\"1500\",\"Humidity\":\"60\",\"Temperature\":\"45\"}\n";
 
     public Client(Context context) {
         this.context = context;
@@ -64,6 +65,11 @@ public class Client {
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         return wifiInfo.getMacAddress();
     }
+
+    public static String getDeviceId(Context context) {
+        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+    }
+
 
     public void connectToServer(String sensorDataString) {
         this.serverName = getHotspotIpAddress();
