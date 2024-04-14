@@ -1,0 +1,25 @@
+# CMake build directory
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CMakeScripts/
+
+# Generated Makefile
+Makefile
+
+# Generated project files
+*.cbp
+*.layout
+*.workspace
+
+# Compiled binaries
+*.exe
+*.out
+*.so
+*.a
+
+# Generated documentation
+/doc/
+
+# Ignore any file starting with . in the build directory
+/build/.*

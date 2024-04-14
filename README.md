@@ -55,6 +55,8 @@ sudo killall pigpiod
 
 ### Run command
 ```
+cmake .
+make
 sudo ./main
 ```
 
