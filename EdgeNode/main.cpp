@@ -28,18 +28,20 @@ int main() {
     sensorDataLimits["humidity"] = 40;
 
 
+     // Start WifiManager in a separate thread
+    std::thread wifiThread([&]() {
+        while (true) {
+            wifiManager.startNetworkProcess(branchNode, branchNodeIP, networkInfo);
+            std::this_thread::sleep_for(std::chrono::seconds(20)); // Sleep for 20 seconds
+        }
+    });
+    
     // Start SensorReader in a separate thread
     std::thread sensorThread([&]() {
         sensor.startReadingThread(sensorData, sensorDataLimits);
     });
 
-    // Start WifiManager in a separate thread
-    // std::thread wifiThread([&]() {
-    //     while (true) {
-    //         wifiManager.startNetworkProcess(branchNode, branchNodeIP, networkInfo);
-    //         std::this_thread::sleep_for(std::chrono::seconds(20)); // Sleep for 20 seconds
-    //     }
-    // });
+   
 
     // Start WifiManager in a separate thread
     std::thread clientThread([&]() {

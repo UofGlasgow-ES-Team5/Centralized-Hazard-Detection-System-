@@ -38,7 +38,7 @@ void SensorReader::sensorReadingThread(nlohmann::json &sensorData, nlohmann::jso
 
     bool isFlashing = false; // Track if we are currently flashing the LED
 
-    while (keepRunning) {
+    while (true) {
         bool data_ready_flag = false;
         sensirion_i2c_hal_sleep_usec(1000000); // 1 second delay
         scd4x_get_data_ready_flag(&data_ready_flag);
@@ -52,7 +52,8 @@ void SensorReader::sensorReadingThread(nlohmann::json &sensorData, nlohmann::jso
             sensorData["co2"] = co2;
             sensorData["temperature"] = temperature;
             sensorData["humidity"] = humidity;
-            bool shouldFlash = co2 > sensorDataLimits["co2"] || temperature > sensorDataLimits["temperature"];
+            // std::cout << "TEST1"  << std::endl;
+            bool shouldFlash = co2 > sensorDataLimits["co2"] || temperature > sensorDataLimits["temperature"] || humidity > sensorDataLimits["humidity"];
 
             // Convert JSON object to string
             std::string jsonString = sensorData.dump();

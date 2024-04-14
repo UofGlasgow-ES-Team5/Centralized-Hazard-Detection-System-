@@ -92,11 +92,11 @@ void Client::updateSensorLimits(nlohmann::json receivedJson, nlohmann::json &sen
         co2 = std::stod(receivedJson["CO2"].get<std::string>());
         temperature = std::stod(receivedJson["Temperature"].get<std::string>());
         humidity = std::stod(receivedJson["Humidity"].get<std::string>());
-        std::cout << "New CO2:" << co2 << " - Temp:" << temperature << "- Humidity:" << humidity  << std::endl;
+        // std::cout << "New CO2:" << co2 << " - Temp:" << temperature << "- Humidity:" << humidity  << std::endl;
 
         sensorDataLimits["co2"] = co2;
         sensorDataLimits["temperature"] = temperature;
         sensorDataLimits["humidity"] = humidity;
 
-        std::cout << "New Limits" << sensorDataLimits.dump() << std::endl;
+        // std::cout << "New Limits" << sensorDataLimits.dump() << std::endl;
 }
