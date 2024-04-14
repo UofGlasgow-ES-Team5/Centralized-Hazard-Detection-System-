@@ -136,9 +136,9 @@ public class MainActivity extends AppCompatActivity {
                     // Parse JSON packet
                     JSONObject sensorData = new JSONObject(jsonPacket);
 
-//                     Append MAC address to JSON data
-                    String macAddress = client.getMacAddress(context); // Implement this method to get MAC address
-                    sensorData.put("branchNode", macAddress);
+//                     Append MAC address to JSON datas
+                    String deviceID = client.getDeviceId(context);
+                    sensorData.put("branchNode", deviceID);
 
                     String sensorDataString = sensorData.toString() + "\n";
 //                     Log sensorData
