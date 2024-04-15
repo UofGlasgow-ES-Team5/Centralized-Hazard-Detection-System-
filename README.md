@@ -116,27 +116,44 @@ This node acts as the command centre of the Hazard Detection system. This node h
 
 Clone the Git repository to the Edge, Branch and Central devices respectively. Then run the following commands to get the project working.
 
+**Dependencies**:
+
+- `nmcli `
+- `cmake `
+- `make`
+- `java`
+
 ### 1. Edge Node
 
-1. Navigate to Edge node directory
+1. Install dependencies
+   ```
+   sudo apt-get install network-manager
+   sudo apt install cmake
+   sudo apt install make
+   ```
+2. Clone repository
+   ```
+   git clone https://github.com/UofGlasgow-ES-Team5/Centralized-Hazard-Detection-System-.git
+   ```
+3. Navigate to Edge node directory
 
    ```
    cd EdgeNode\
    ```
 
-2. Run the CMake command
+4. Run the CMake command
    ```
    cmake .
    ```
-3. Run the Make file
+5. Run the Make file
    ```
    make
    ```
-4. Release all GPIO pins
+6. Release all GPIO pins
    ```
    sudo killall pigpiod
    ```
-5. Run the Edge node executable file
+7. Run the Edge node executable file
    ```
    sudo ./main
    ```
@@ -152,42 +169,58 @@ Clone the Git repository to the Edge, Branch and Central devices respectively. T
 
 ### 3. Central Node
 
-1. Navigate to Central node directory
+1. Install ependencies
+   ```
+   sudo apt install default-jdk
+   sudo apt install cmake
+   sudo apt install make
+   ```
+2. Clone repository
+   ```
+   git clone https://github.com/UofGlasgow-ES-Team5/Centralized-Hazard-Detection-System-.git
+   ```
+3. Navigate to Central node directory
 
    ```
    cd CentralNode\
    ```
 
-2. Run the CMake command
+4. Run the CMake command
    ```
    cmake .
    ```
-3. Run the Make file
+5. Run the Make file
    ```
    make
    ```
-4. Release all GPIO pins
+6. Release all GPIO pins
    ```
    sudo killall pigpiod
    ```
-5. Run the Central node executable file
+7. Run the Central node executable file
    ```
    sudo ./main
    ```
-6. Open a new Terminal window
-7. Navigate to the Central node GUI app
-   ```
-   cd CentralNode\GUI_HD\src\
-   ```
-8. Compile files for Central node GUI
-   ```
-   javac Main.class
-   ```
-9. Launch Central node GUI
-   ```
-   java Main
-   ```
-   ![Central node GUI](Images/CentralnodeGUI.png)
+8. Open a new Terminal window
+9. Navigate to the Central node GUI app
+
+```
+cd CentralNode\GUI_HD\src\
+```
+
+10. Compile files for Central node GUI
+
+```
+javac Main.class
+```
+
+10. Launch Central node GUI
+
+```
+java Main
+```
+
+![Central node GUI](Images/CentralnodeGUI.png)
 
 ## Project workflow
 
