@@ -21,6 +21,8 @@ The development of HazardSense was driven by the dire need to combat the invisib
 - 1.5. 2 x 1N4001 Diodes (for reverse polarity protection)
 - 1.6. 2 x 220ohm Resistors
 
+![Central Node Schematic](Schematic_Diagrams/CentralNodeSchematic.JPG)
+
 ### 2. Edge Node:
 - 2.1. Raspberry Pi 4 Model B
 - 2.2. MicroSD card (with Raspbian OS installed)
@@ -33,7 +35,7 @@ The development of HazardSense was driven by the dire need to combat the invisib
 - 2.9. 3.3V Active Buzzer
 
 ![Edge Node Schematic](Schematic_Diagrams/EdgeNodeSchematic.JPG)
-![Central Node Schematic](Schematic_Diagrams/CentralNodeSchematic.JPG)
+
 
 
 ## User Stories
