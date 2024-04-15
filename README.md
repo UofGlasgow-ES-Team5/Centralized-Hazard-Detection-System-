@@ -6,6 +6,8 @@ HazardSense is an environmental monitoring system designed to enhance indoor saf
 
 Whilst demonstrated using CO2 gas, the system's adaptability and scalability provides the capability to detect various poisonous gases, and makes it suitable for a range of settings, from homes to research labs and industrial factories.
 
+_Stay in the loop and follow us on [Instagram](https://www.instagram.com/hazardsense?igsh=OGQ5ZDc2ODk2ZA%3D%3D&utm_source=qr) for all the coolest updates! Exclusive content, behind-the-scenes sneak peeks, and epic vibes await. Don't miss out, join the squad now!🛡️🚨💨🔥🌐💻_
+
 ## Motivation
 
 The development of HazardSense was driven by the dire need to combat the invisible, but significant, dangers of gases, as well as the provision of safe, comfortable, and more productive environments.
@@ -21,13 +23,13 @@ The development of HazardSense was driven by the dire need to combat the invisib
 - 1.5. 2 x 1N4001 Diodes (for reverse polarity protection)
 - 1.6. 2 x 220ohm Resistors
 
-![Central Node Schematic](Schematic_Diagrams/CentralNodeSchematic.JPG)
+![Central Node Schematic](Images/Schematic_Diagrams/CentralNodeSchematic.JPG)
 
 ### 2. Branch Node:
 
 - 2.1 Android mobile device
 
-![Brand Node Android App](Schematic_Diagrams/BranchNodeAndroidApp.png)
+![Brand Node Android App](Images/Schematic_Diagrams/BranchNodeAndroidApp.png)
 
 ### 3. Edge Node:
 
@@ -41,7 +43,7 @@ The development of HazardSense was driven by the dire need to combat the invisib
 - 3.8. Blue LED (for Wi-Fi connectivity indication)
 - 3.9. 3.3V Active Buzzer
 
-![Edge Node Schematic](Schematic_Diagrams/EdgeNodeSchematic.JPG)
+![Edge Node Schematic](Images/Schematic_Diagrams/EdgeNodeSchematic.JPG)
 
 ## User Stories
 
@@ -71,7 +73,7 @@ The Edge node, serving as a mobile device accompanying personnel in the field, o
 
 **_Edge Node Class Diagram_**
 
-![Edge Node Class Diagram](UML_Diagrams/EdgeNodeClassDiagram.png)
+![Edge Node Class Diagram](UML_Diagrams/ClassDigram/EdgeNodeClassDiagram.png)
 
 **_Edge Node Sequence Diagram_**
 
@@ -87,7 +89,7 @@ The branch node serves as a network device responsible for establishing a commun
 
 **_Branch Node Class Diagram_**
 
-![Branch Node Class Diagram](UML_Diagrams/BranchNode.png)
+![Branch Node Class Diagram](UML_Diagrams/ClassDigram/BranchNode.png)
 
 **_Branch Node Sequence Diagram_**
 
@@ -104,7 +106,7 @@ This node acts as the command centre of the Hazard Detection system. This node h
 
 **_Central Node Class Diagram_**
 
-![Central Node Class Diagram](UML_Diagrams/CentralNodeClassDiagram.png)
+![Central Node Class Diagram](UML_Diagrams/ClassDigram/CentralNodeClassDiagram.png)
 
 **_Central Node Sequence Diagram_**
 
@@ -116,37 +118,60 @@ Clone the Git repository to the Edge, Branch and Central devices respectively. T
 
 ### 1. Edge Node
 
-1. ```
+1. Navigate to Edge node directory
+
+   ```
    cd .\EdgeNode\
    ```
-2. ```
+
+2. Run the CMake command
+   ```
    cmake .
    ```
-3. ```
+3. Run the Make file
+   ```
    make
    ```
-4. ```
+4. Release all GPIO pins
+   ```
    sudo killall pigpiod
    ```
-5. ```
+5. Run the Edge node executable file
+   ```
    sudo ./main
    ```
 
-### 2. Central Node
+### 2. Brand Node
 
-1. ```
+1. Navigate to APK directory in the Branch node directory
+   ```
+   cd  .\BranchNode\APK\
+   ```
+2. Install the Android application using the APK files
+3. Click on _Start Server_ button on the application
+
+### 3. Central Node
+
+1. Navigate to Central node directory
+
+   ```
    cd .\CentralNode\
    ```
-2. ```
+
+2. Run the CMake command
+   ```
    cmake .
    ```
-3. ```
+3. Run the Make file
+   ```
    make
    ```
-4. ```
+4. Release all GPIO pins
+   ```
    sudo killall pigpiod
    ```
-5. ```
+5. Run the Central node executable file
+   ```
    sudo ./main
    ```
 
@@ -187,7 +212,7 @@ sudo ./main
 #### Connect to WiFi
 
 ```
-sudo nmcli device wifi connect Hotspot password qwerty123
+sudo nmcli device wifi connect <WiFi> password <password>
 ```
 
 #### TCP Server test
