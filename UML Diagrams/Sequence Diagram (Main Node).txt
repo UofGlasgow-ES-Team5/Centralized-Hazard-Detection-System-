@@ -1,0 +1,22 @@
++-------+               +------------+               +----------+              +------------+
+| Main  |               | FileHandler|               | TCPServer|              | ZoneHandler|
++-------+               +------------+               +----------+              +------------+
+    |                        |                             |                          |
+    |---startServer--------->|                             |                          |
+    |                        |----init-------------------->|                          |
+    |                        |                             |--listen----------------->|
+    |                        |                             |<--confirm listening------|
+    |                        |                             |                          |
+    |                        |                             |                          |
+    |                        |                             |<------accept connection--|
+    |                        |                             |                          |
+    |---checkFilePeriodically|                             |                          |
+    |                        |---readFileToJson----------->|                          |
+    |                        |<--return jsonData-----------|                          |
+    |                        |                             |                          |
+    |                        |                             |---receive data---------->|
+    |                        |                             |                          |---processData------------>
+    |                        |                             |                          |<--return processingResult-|
+    |                        |                             |<---sendResponse----------|
+    |                        |                             |                          |
+    +------------------------+                             +--------------------------+
