@@ -121,7 +121,7 @@ Clone the Git repository to the Edge, Branch and Central devices respectively. T
 1. Navigate to Edge node directory
 
    ```
-   cd .\EdgeNode\
+   cd EdgeNode\
    ```
 
 2. Run the CMake command
@@ -145,7 +145,7 @@ Clone the Git repository to the Edge, Branch and Central devices respectively. T
 
 1. Navigate to APK directory in the Branch node directory
    ```
-   cd  .\BranchNode\APK\
+   cd  BranchNode\APK\
    ```
 2. Install the Android application using the APK files
 3. Click on _Start Server_ button on the application
@@ -155,7 +155,7 @@ Clone the Git repository to the Edge, Branch and Central devices respectively. T
 1. Navigate to Central node directory
 
    ```
-   cd .\CentralNode\
+   cd CentralNode\
    ```
 
 2. Run the CMake command
@@ -174,6 +174,20 @@ Clone the Git repository to the Edge, Branch and Central devices respectively. T
    ```
    sudo ./main
    ```
+6. Open a new Terminal window
+7. Navigate to the Central node GUI app
+   ```
+   cd CentralNode\GUI_HD\src\
+   ```
+8. Compile files for Central node GUI
+   ```
+   javac Main.class
+   ```
+9. Launch Central node GUI
+   ```
+   java Main
+   ```
+   ![Central node GUI](Images/CentralnodeGUI.png)
 
 ## Project workflow
 
