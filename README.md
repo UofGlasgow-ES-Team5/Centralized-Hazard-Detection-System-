@@ -1,5 +1,20 @@
 # HazardSense: Environmental Monitoring and Hazard Prevention System
 
+[![4-Contributor](https://img.shields.io/badge/Contributors%20-4-brightgreen.svg?style=flat-square)](https://github.com/UofGlasgow-ES-Team5/Centralized-Hazard-Detection-System-/graphs/contributors)
+[![Stars](https://img.shields.io/badge/Stars%20-3-yellow.svg?style=flat-square)](https://github.com/UofGlasgow-ES-Team5/Centralized-Hazard-Detection-System-/stargazers)
+[![Fork](https://img.shields.io/badge/Fork%20-0-blue.svg?style=flat-square)](https://github.com/UofGlasgow-ES-Team5/Centralized-Hazard-Detection-System-/forks)
+
+## Contents
+
+- [Introduction](#Introduction)
+- [Motivation](#Motivation)
+- [Hardware Requirements](#Hardware-Requirements)
+- [User Stories](#User-Stories)
+- [Node Functionalities](#Node-Functionalities)
+- [Project setup](#Project-setup)
+- [Project workflow](#Project-workflow)
+- [Utility commands](#Utility-commands)
+
 ## Introduction:
 
 HazardSense is an environmental monitoring system designed to enhance indoor safety and air quality through its environmental monitoring and hazard prevention capabilities. By utilising an advanced high-precision sensor to measure CO2 and temperature levels, the system can detect air quality issues and taking immediate corrective actions to prevent potential health risks.
@@ -23,13 +38,13 @@ The development of HazardSense was driven by the dire need to combat the invisib
 - 1.5. 2 x 1N4001 Diodes (for reverse polarity protection)
 - 1.6. 2 x 220ohm Resistors
 
-![Central Node Schematic](Images/Schematic_Diagrams/CentralNodeSchematic.JPG)
+  ![Central Node Schematic](Images/Schematic_Diagrams/CentralNodeSchematic.JPG)
 
 ### 2. Branch Node:
 
 - 2.1 Android mobile device
 
-![Brand Node Android App](Images/Schematic_Diagrams/BranchNodeAndroidApp.png)
+  ![Brand Node Android App](Images/Schematic_Diagrams/BranchNodeAndroidApp.png)
 
 ### 3. Edge Node:
 
@@ -43,7 +58,7 @@ The development of HazardSense was driven by the dire need to combat the invisib
 - 3.8. Blue LED (for Wi-Fi connectivity indication)
 - 3.9. 3.3V Active Buzzer
 
-![Edge Node Schematic](Images/Schematic_Diagrams/EdgeNodeSchematic.JPG)
+  ![Edge Node Schematic](Images/Schematic_Diagrams/EdgeNodeSchematic.JPG)
 
 ## User Stories
 
@@ -71,13 +86,13 @@ The Edge node, serving as a mobile device accompanying personnel in the field, o
 - **1.3. Client Thread:** This thread initiates and maintains communication links with the branch node.
   It transmits sensor readings to the branch node for further analysis or processing and receives updates on sensor limits from the branch node and adjusts the corresponding variables accordingly.
 
-**_Edge Node Class Diagram_**
+  **_Edge Node Class Diagram_**
 
-![Edge Node Class Diagram](UML_Diagrams/ClassDigram/EdgeNodeClassDiagram.png)
+  ![Edge Node Class Diagram](UML_Diagrams/ClassDigram/EdgeNodeClassDiagram.png)
 
-**_Edge Node Sequence Diagram_**
+  **_Edge Node Sequence Diagram_**
 
-![Edge Node Sequence Diagram](UML_Diagrams/SequenceDiagram/EdgeNodeSequenceDiagram.png)
+  ![Edge Node Sequence Diagram](UML_Diagrams/SequenceDiagram/EdgeNodeSequenceDiagram.png)
 
 ### 2. Branch Node:
 
@@ -87,13 +102,13 @@ The branch node serves as a network device responsible for establishing a commun
 - **2.2. Sensor Data Relay:** The branch node receives sensor data from the edge node. It appends its MAC address to the received data packet. Subsequently, it forwards the packet to the central node.
 - **2.3. MAC Address Appendage:** Adding its MAC address to the packet serves the purpose of aiding the central node in determining the precise location of the originating edge node.
 
-**_Branch Node Class Diagram_**
+  **_Branch Node Class Diagram_**
 
-![Branch Node Class Diagram](UML_Diagrams/ClassDigram/BranchNode.png)
+  ![Branch Node Class Diagram](UML_Diagrams/ClassDigram/BranchNode.png)
 
-**_Branch Node Sequence Diagram_**
+  **_Branch Node Sequence Diagram_**
 
-![Branch Node Sequence Diagram](UML_Diagrams/SequenceDiagram/BrandNodeSequenceDiagram.png)
+  ![Branch Node Sequence Diagram](UML_Diagrams/SequenceDiagram/BrandNodeSequenceDiagram.png)
 
 ### 3. Central Node:
 
@@ -104,13 +119,13 @@ This node acts as the command centre of the Hazard Detection system. This node h
 - **3.3. Server Thread:** This thread is responsible for running the TCPServer instance. It continuously listens for incoming connections and handles client requests. This thread executes the `run` method of the `TCPServer` class.
 - **3.3. GUI Thread:** Responsible for managing the graphical user interface (GUI) visible to users at the Central Node, this thread presents visual readings derived from data captured by the edge node device. Moreover, it enables users to modify sensor limits. Should any sensory input exceed the permissible limits, the GUI promptly relays the corresponding location information and displays a warning message to alert users.
 
-**_Central Node Class Diagram_**
+  **_Central Node Class Diagram_**
 
-![Central Node Class Diagram](UML_Diagrams/ClassDigram/CentralNodeClassDiagram.png)
+  ![Central Node Class Diagram](UML_Diagrams/ClassDigram/CentralNodeClassDiagram.png)
 
-**_Central Node Sequence Diagram_**
+  **_Central Node Sequence Diagram_**
 
-![Central Node Sequence Diagram](UML_Diagrams/SequenceDiagram/CentralNodeSequenceDiagram.png)
+  ![Central Node Sequence Diagram](UML_Diagrams/SequenceDiagram/CentralNodeSequenceDiagram.png)
 
 ## Project setup
 
@@ -125,21 +140,24 @@ Clone the Git repository to the Edge, Branch and Central devices respectively. T
 
 ### 1. Edge Node
 
+<details>
+    <summary>Get started with the Edge node!</summary>
+    
 1. Install dependencies
-   ```
-   sudo apt-get install network-manager
-   sudo apt install cmake
-   sudo apt install make
-   ```
+       ```
+       sudo apt-get install network-manager
+       sudo apt install cmake
+       sudo apt install make
+       ```
 2. Clone repository
-   ```
-   git clone https://github.com/UofGlasgow-ES-Team5/Centralized-Hazard-Detection-System-.git
-   ```
+       ```
+       git clone https://github.com/UofGlasgow-ES-Team5/Centralized-Hazard-Detection-System-.git
+       ```
 3. Navigate to Edge node directory
 
-   ```
-   cd EdgeNode\
-   ```
+    ```
+    cd EdgeNode
+    ```
 
 4. Run the CMake command
    ```
@@ -158,27 +176,44 @@ Clone the Git repository to the Edge, Branch and Central devices respectively. T
    sudo ./main
    ```
 
+</details>
+
 ### 2. Brand Node
 
+<details>
+    <summary>Get started with the Branch node!</summary>
+    
 1. Navigate to APK directory in the Branch node directory
-   ```
-   cd  BranchNode\APK\
-   ```
+
+```
+
+cd BranchNode\APK\
+
+```
+
 2. Install the Android application using the APK files
 3. Click on _Start Server_ button on the application
+</details>
 
 ### 3. Central Node
 
-1. Install ependencies
+<details>
+    <summary>Get started with the Central node!</summary>
+
+1. Install dependencies
+
    ```
    sudo apt install default-jdk
    sudo apt install cmake
    sudo apt install make
    ```
+
 2. Clone repository
+
    ```
    git clone https://github.com/UofGlasgow-ES-Team5/Centralized-Hazard-Detection-System-.git
    ```
+
 3. Navigate to Central node directory
 
    ```
@@ -186,41 +221,51 @@ Clone the Git repository to the Edge, Branch and Central devices respectively. T
    ```
 
 4. Run the CMake command
+
    ```
    cmake .
    ```
+
 5. Run the Make file
+
    ```
    make
    ```
+
 6. Release all GPIO pins
+
    ```
    sudo killall pigpiod
    ```
+
 7. Run the Central node executable file
+
    ```
    sudo ./main
    ```
+
 8. Open a new Terminal window
 9. Navigate to the Central node GUI app
 
-```
-cd CentralNode\GUI_HD\src\
-```
+   ```
+   cd CentralNode\GUI_HD\src\
+   ```
 
 10. Compile files for Central node GUI
 
-```
-javac Main.class
-```
+    ```
+    javac Main.class
+    ```
 
-10. Launch Central node GUI
+11. Launch Central node GUI
 
-```
-java Main
-```
+    ```
+    java Main
+    ```
 
-![Central node GUI](Images/CentralnodeGUI.png)
+    ![Central node GUI](Images/CentralnodeGUI.png)
+
+</details>
 
 ## Project workflow
 
