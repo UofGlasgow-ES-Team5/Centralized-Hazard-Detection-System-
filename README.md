@@ -13,7 +13,7 @@ The development of HazardSense was driven by the dire need to combat the invisib
 
 ## Hardware Requirements
 
-### 1. Main Node:
+### 1. Central Node:
 - 1.1. Raspberry Pi 3 Model B
 - 1.2. MicroSD card** (with Raspbian OS installed)
 - 1.3. 2 x 5V DC fans
@@ -33,6 +33,20 @@ The development of HazardSense was driven by the dire need to combat the invisib
 - 2.9. 3.3V Active Buzzer
 
 ![Edge Node Schematic](Schematic_Diagrams/EdgeNodeSchematic.JPG)
+![Central Node Schematic](Schematic_Diagrams/CentralNodeSchematic.JPG)
+
+
+## User Stories
+
+### Edge Node:
+> **As an employee**, I want to detect environmental hazards, such as gas concentrations and high temperatures, and have a buzzer sound during hazardous situations so that I can quickly and safely vacate the area.
+
+### Branch Node:
+> **As an administrator**, I want to efficiently receive environmental threshold values from the Central Node and securely transmit the information to edge nodes, so that each edge node is configured with the latest environmental thresholds and each branch node is identified for location determination.
+
+### Central Node:
+> **As an administrator**, I want the central node to receive and process hazard data from all edge nodes so that I can rapidly alert employees in the area and take appropriate response action, such as ensuring proper ventilation.
+
 
 ## Compilation command
 
