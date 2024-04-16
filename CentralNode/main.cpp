@@ -43,6 +43,7 @@ int main() {
             int hazardZoneID = ZoneHandler::mapBranchZones(zoneInfo.first);
             if(hazardZoneID > -1) {
                 std::cout << "Hazard zone #" << hazardZoneID << std::endl;
+                FileHandler::writeToLocationFile(hazardZoneID);
                 ZoneHandler::zoneFanAction(hazardZoneID, zoneInfo.second);
             }
         }

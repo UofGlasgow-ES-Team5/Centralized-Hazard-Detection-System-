@@ -107,3 +107,23 @@ void FileHandler::writeToSensorDataFile(std::string sensorDataString, const nloh
         std::cout << "Unable to open file for writing" << std::endl;
     }
 }
+
+void FileHandler::writeToLocationFile(int hazardZoneID) {
+    std::string hazardDescription = "Hazard at zone #" + std::to_string(hazardZoneID) + ".";
+    std::ofstream outFile("./GUI_HD/location.txt");
+
+     if (!outFile) {
+        std::cerr << "Error: Unable to open location file!" << std::endl;
+        return;
+    }
+
+    // Write hazard description to file
+    outFile << hazardDescription << std::endl;
+
+    // Close file
+    outFile.close();
+
+    // std::cout << "Hazard report has been written to hazard_report.txt" << std::endl;
+
+    return;
+}
