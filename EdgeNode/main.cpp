@@ -32,7 +32,7 @@ int main() {
     std::thread wifiThread([&]() {
         while (true) {
             wifiManager.startNetworkProcess(branchNode, branchNodeIP, networkInfo);
-            std::this_thread::sleep_for(std::chrono::seconds(20)); // Sleep for 20 seconds
+            std::this_thread::sleep_for(std::chrono::seconds(7)); // Sleep for 7 seconds
         }
     });
     
@@ -48,7 +48,7 @@ int main() {
         while (true) {
             // client.connectToServer(branchNodeIP, sensorData);
             client.connectToServer(branchNodeIP, sensorData, sensorDataLimits);
-            std::this_thread::sleep_for(std::chrono::seconds(5)); // Sleep for 20 seconds
+            std::this_thread::sleep_for(std::chrono::seconds(5)); // Sleep for 5 seconds
         }
     });
 

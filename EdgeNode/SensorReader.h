@@ -28,7 +28,7 @@ private:
     const uint16_t MAX_CO2 = 1000;
     const float MAX_TEMP = 25.0;
     const int LED_GPIO = 4;
-    const int BUZZER_GPIO = 22;
+    const int BUZZER_GPIO = 16;
     std::atomic<bool> keepRunning;
     std::thread sensorThread;
 
