@@ -107,6 +107,7 @@ public class HDFrame extends JFrame implements ActionListener {
 		locT.setEditable(false);
 		locT.setBackground(Color.DARK_GRAY);
 		locT.setFont(new Font("Arial",Font.BOLD,15)); 
+		locT.setForeground(Color.RED);
 
 		
 		msgT.setBounds(10, 23, 480,70);
@@ -340,14 +341,38 @@ public class HDFrame extends JFrame implements ActionListener {
 		if(co2 > co2L ) {
 			msgT.setBackground(Color.YELLOW);
 			msgT.setText("**Warning:\nCO2 level has exceeded permissible limit.**");
+			try {
+				String location = loadMessage("../location.txt");
+				locT.setText(location);
+			   
+		   } catch (IOException e) {
+			   e.printStackTrace();
+			   locT.setText("Error: Unable to read file.");
+		   }
 		}
 		else if (temperature > temperatureL ) {
 			msgT.setBackground(Color.YELLOW);
 			msgT.setText("**Warning:\nTemperature level has exceeded permissible limit.**");
+			try {
+				String location = loadMessage("../location.txt");
+				locT.setText(location);
+			   
+		   } catch (IOException e) {
+			   e.printStackTrace();
+			   locT.setText("Error: Unable to read file.");
+		   }
 		}
 		else if(humidity > humidityL ) {
 			msgT.setBackground(Color.YELLOW);
 			msgT.setText("**Warning:\nHumidity level has exceeded permissible limit.**");
+			try {
+				String location = loadMessage("../location.txt");
+				locT.setText(location);
+			   
+		   } catch (IOException e) {
+			   e.printStackTrace();
+			   locT.setText("Error: Unable to read file.");
+		   }
 		}
 		else {
 			msgT.setBackground(Color.DARK_GRAY);
