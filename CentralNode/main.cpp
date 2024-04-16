@@ -39,6 +39,7 @@ int main() {
         for (const auto& request : requestQueue) {
             std::cout << "Received request: " << request << std::endl;
             std::pair<std::string, bool> zoneInfo = ZoneHandler::zoneDetector(request, sensorLimits);
+            FileHandler::writeToSensorDataFile(request, sensorLimits);
             int hazardZoneID = ZoneHandler::mapBranchZones(zoneInfo.first);
             if(hazardZoneID > -1) {
                 std::cout << "Hazard zone #" << hazardZoneID << std::endl;
